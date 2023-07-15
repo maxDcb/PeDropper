@@ -4,7 +4,7 @@ sudo apt install gcc-mingw-w64
 sudo apt install g++-mingw-w64  
 pip3 install pycryptodome  
 
-Generate a dropper for any DLL or EXE. The shellcode of the payload is generated with [Donut](https://github.com/TheWover/donut). The dropper is compile with the generated shellcode (credit to sektor7). The exe resulting has no import table, every function name are xored and the payload is AES encrypted. 
+Generate a dropper for any DLL or EXE. The shellcode of the payload is generated with [Donut](https://github.com/TheWover/donut). The dropper is compile with the generated shellcode (credit to sektor7). The exe resulting has no import table, every function name are xored and the payload is AES encrypted. A dll is also generated with a "go" exported function (rundll32 implant,go), this dll could be use for dll hijacking.
 
 
 Compatible with linux and windows.  
