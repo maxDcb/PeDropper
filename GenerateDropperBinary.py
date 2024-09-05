@@ -145,13 +145,22 @@ def generatePayloads(binary, binaryArgs, rawShellCode):
         output = popen.stdout.read()
         print(output.decode("utf-8") )
 
-        "./bin/implant.exe"
         if os.name == 'nt':
                 dropperExePath = os.path.join(Path(__file__).parent, 'bin\\implant.exe')
                 dropperDllPath = os.path.join(Path(__file__).parent, 'bin\\implant.dll')
         else:
                 dropperExePath = os.path.join(Path(__file__).parent, 'bin/implant.exe')
                 dropperDllPath = os.path.join(Path(__file__).parent, 'bin/implant.dll')
+
+        if not os.path.isfile(dropperExePath):
+                print("[+] Error: Dropper EXE file don't exist")
+                return "", ""
+
+        if not os.path.isfile(dropperDllPath):
+                print("[+] Error: Dropper DLL file don't exist")
+                return "", ""
+
+        print("[+] Done")
 
         return dropperExePath, dropperDllPath
 
