@@ -6,6 +6,7 @@ import hashlib
 import random
 import string
 import subprocess
+import stat
 from pathlib import Path
 
 
@@ -87,14 +88,18 @@ def generatePayloads(binary, binaryArgs, rawShellCode):
                 print('binary ', binary)
                 print('binaryArgs ', binaryArgs)
                 print('')
+                
                 if os.name == 'nt':
-                        donutBinary = os.path.join(Path(__file__).parent, '.\\ressources\\donut.exe')
-                        shellcodePath = os.path.join(Path(__file__).parent, '.\\bin\\dropper.bin')
+                        donutBinary = os.path.join(Path(__file__).parent, 'ressources', 'donut.exe')
+                        shellcodePath = os.path.join(Path(__file__).parent, 'bin', 'dropper.bin')
                         args = (donutBinary, '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', shellcodePath, binary)
                 else:   
-                        donutBinary = os.path.join(Path(__file__).parent, './ressources/donut')
-                        shellcodePath = os.path.join(Path(__file__).parent, './bin/dropper.bin')
+                        donutBinary = os.path.join(Path(__file__).parent, 'ressources', 'donut')
+                        shellcodePath = os.path.join(Path(__file__).parent, 'bin', 'dropper.bin')
                         args = (donutBinary, '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', shellcodePath, '-i' , binary)
+                        st = os.stat(donutBinary)
+                        os.chmod(donutBinary, st.st_mode | stat.S_IEXEC)
+
                 popen = subprocess.Popen(args, stdout=subprocess.PIPE)
                 popen.wait()
                 output = popen.stdout.read()
@@ -174,7 +179,11 @@ def generatePayloads(binary, binaryArgs, rawShellCode):
         else:   
                 compileScript = os.path.join(Path(__file__).parent, './compile.sh')
                 args = compileScript.split()
-        popen = subprocess.Popen(args, stdout=subprocess.PIPE, cwd=Path(__file__).parent)
+
+                st = os.stat(compileScript)
+                os.chmod(compileScript, st.st_mode | stat.S_IEXEC)
+                
+        popen = subprocess.Popen(args, stdout=subprocess.PIPE)
         popen.wait()
         output = popen.stdout.read()
         print(output.decode("utf-8") )
