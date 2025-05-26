@@ -50,8 +50,13 @@ def printCiphertext(ciphertext):
 
 
 def getHelpExploration():
-        helpMessage = 'PowershellWebDelivery generate a powershell one liner to download and execute a payload from a web server\n'
-        helpMessage += 'Usage:  Dropper PowershellWebDelivery listenerDownload listenerBeacon\n'
+        helpMessage = """
+PeDropper - Generate a dropper EXE or DLL to run a PE binary or inject raw shellcode.
+
+Usage:
+  Dropper PeDropper listenerDownload listenerBeacon
+"""
+
         return helpMessage
 
 
@@ -208,11 +213,39 @@ def generatePayloads(binary, binaryArgs, rawShellCode):
         return dropperExePath, dropperDllPath
 
 
+helpMessage = """
+PeDropper - Generate a dropper EXE or DLL to run a PE binary or inject raw shellcode.
+
+Usage:
+  PeDropper.py -b <path_to_binary> [-a "<arguments>"]
+  PeDropper.py -r <path_to_raw_shellcode>
+
+Options:
+  -h                        Show this help message and exit.
+  -b, --binary <path>       Path to the PE binary to embed and execute (e.g., C:\\Windows\\System32\\calc.exe).
+  -a, --args "<args>"       Optional arguments to pass to the binary upon execution.
+  -r <path>                 Use raw shellcode instead of a PE binary.
+
+Examples:
+  # On Windows: execute calc.exe without arguments
+  PeDropper.py -b C:\\Windows\\System32\\calc.exe
+
+  # On Linux: execute calc with arguments
+  PeDropper.py -b ./calc -a "-flag1 -flag2"
+
+  # Inject raw shellcode into the dropper
+  PeDropper.py -r ./payload.raw
+
+Notes:
+  - Either --binary or -r must be provided, but not both.
+  - The script outputs both EXE and DLL versions of the dropper.
+"""
+
+
 def main(argv):
 
         if(len(argv)<2):
-                print ('On Windows:\nGenerateDropperBinary.py -b C:\\Windows\\System32\\calc.exe -a "some args"')
-                print ('On linux:\nGenerateDropperBinary.py -b ./calc.exe -a "some args"')
+                print(helpMessage)
                 exit()
 
         binary=""
@@ -222,8 +255,8 @@ def main(argv):
         opts, args = getopt.getopt(argv,"hb:a:r:",["binary=","args="])
         for opt, arg in opts:
                 if opt == '-h':
-                        print ('On Windows:\nGenerateDropperBinary.py -b C:\\Windows\\System32\\calc.exe -a "some args"')
-                        print ('On linux:\nGenerateDropperBinary.py -b ./calc.exe -a "some args"')
+                        print ('On Windows:\nPeDropper.py -b C:\\Windows\\System32\\calc.exe -a "some args"')
+                        print ('On linux:\nPeDropper.py -b ./calc.exe -a "some args"')
                         sys.exit()
                 elif opt in ("-b", "--binary"):
                         binary = arg

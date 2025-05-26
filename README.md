@@ -1,27 +1,55 @@
-# GenerateDropperBinary
+# PeDropper
 
-This project is part of the [Exploration C2 Framework](https://github.com/maxDcb/C2TeamServer)
+**PeDropper** is a Python-based tool that generates a dropper executable (EXE) and DLL to execute a PE binary or inject raw shellcode. It simplifies payload creation for red team operations, malware simulation, or post-exploitation tasks.
 
-sudo apt install gcc-mingw-w64  
-sudo apt install g++-mingw-w64  
-pip3 install pycryptodome  
+This dropper is integrated as a module in the [Exploration C2](https://github.com/maxDcb/C2TeamServer) framework.
 
-Generate a dropper for any DLL or EXE. The shellcode of the payload is generated with [Donut](https://github.com/TheWover/donut). The dropper is compile with the generated shellcode (credit to sektor7). The exe resulting has no import table, every function name are xored and the payload is AES encrypted. A dll is also generated with a "go" exported function (rundll32 implant,go), this dll could be use for dll hijacking.
+## Features
 
-``` bash                                                                                                                                             
-python3 PeDropper.py -b ./BeaconHttp.exe -a "10.10.10.10 8443 https" 
-[+] Generate dropper for params:
-binary  .//BeaconHttp.exe
-binaryArgs  10.10.10.10 8443 https
+* Embed and execute a PE binary inside a generated dropper
+* Pass command-line arguments to the embedded binary
+* Support for injecting raw shellcode directly
+* Outputs both EXE and DLL versions of the dropper
 
-[+] Generate shellcode of payload with donut
-    ...
+## Usage
 
-[+] Compile dropper with shellcode
-
-[+] Done
-./bin/implant.exe
-./bin/implant.dll
+```bash
+PeDropper.py -b <path_to_binary> [-a "<arguments>"]
+PeDropper.py -r <path_to_raw_shellcode>
 ```
 
-![alt text](https://github.com/maxDcb/PeDropper/blob/master/ressources/image1.png?raw=true)
+### Options
+
+* `-h`
+  Show the help message and exit.
+
+* `-b, --binary <path>`
+  Path to the PE binary to embed and execute (e.g., `C:\Windows\System32\calc.exe` or `./calc`).
+
+* `-a, --args "<args>"`
+  Optional command-line arguments to pass to the binary.
+
+* `-r <path>`
+  Path to a raw shellcode file to inject into the dropper instead of a PE binary.
+
+## Examples
+
+```bash
+# On Windows: generate a dropper for calc.exe
+PeDropper.py -b C:\Windows\System32\calc.exe
+
+# On Linux: generate a dropper for calc with arguments
+PeDropper.py -b ./calc -a "-flag1 -flag2"
+
+# Generate a dropper that injects raw shellcode
+PeDropper.py -r ./payload.raw
+```
+
+## Notes
+
+* Either `--binary` or `-r` (shellcode) must be provided, but not both.
+* Ensure any shellcode or PE binary used is compatible with the target environment.
+
+## Disclaimer
+
+This tool is intended for authorized security research and red teaming only. Unauthorized use is strictly prohibited.
