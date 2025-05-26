@@ -188,7 +188,7 @@ def generatePayloads(binary, binaryArgs, rawShellCode):
                 st = os.stat(compileScript)
                 os.chmod(compileScript, st.st_mode | stat.S_IEXEC)
                 
-        popen = subprocess.Popen(args, stdout=subprocess.PIPE)
+        popen = subprocess.Popen(args, stdout=subprocess.PIPE, cwd=Path(__file__).parent)
         popen.wait()
         output = popen.stdout.read()
         print(output.decode("utf-8") )
