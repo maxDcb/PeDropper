@@ -4,6 +4,24 @@
 #include "helpers.h"
 #include "PEstructs.h"
 
+int _strcmp(const char* a, const char* b)
+{
+    int i = 0;
+
+    if (a == 0 || b == 0)
+        return (a == b) ? 0 : (a ? 1 : -1);
+
+    while (a[i] != '\0' && b[i] != '\0')
+    {
+        if (a[i] != b[i])
+            return (unsigned char)a[i] - (unsigned char)b[i];
+
+        i++;
+    }
+
+    return (unsigned char)a[i] - (unsigned char)b[i];
+}
+
 
 HMODULE WINAPI hlpGetModuleHandle(LPCWSTR sModuleName) 
 {
@@ -29,7 +47,7 @@ HMODULE WINAPI hlpGetModuleHandle(LPCWSTR sModuleName)
 		const char * pbuff = (const char *) pe->BaseDllName.Buffer;
 		const char * pm = (const char *)sModuleName;
 		
-		if (strcmp(pbuff, pm) == 0)
+		if (_strcmp(pbuff, pm) == 0)
 			return (HMODULE) pe->DllBase;
 	}
 
@@ -83,7 +101,7 @@ FARPROC WINAPI hlpGetProcAddress(HMODULE hMod, char * sProcName)
 		{
 			char * sTmpFuncName = (char *) pBaseAddr + (DWORD_PTR) pFuncNameTbl[ii];
 	
-			if (strcmp(sProcName, sTmpFuncName) == 0)	
+			if (_strcmp(sProcName, sTmpFuncName) == 0)	
 			{
 				// found, get the function virtual address = RVA + BaseAddr
 				pProcAddr = (FARPROC) (pBaseAddr + (DWORD_PTR) pEAT[pHintsTbl[ii]]);

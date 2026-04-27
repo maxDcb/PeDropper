@@ -97,7 +97,7 @@ def generatePayloads(binary, binaryArgs, rawShellCode):
                 if os.name == 'nt':
                         donutBinary = os.path.join(Path(__file__).parent, 'ressources', 'donut.exe')
                         shellcodePath = os.path.join(Path(__file__).parent, 'bin', 'dropper.bin')
-                        args = (donutBinary, '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', shellcodePath, binary)
+                        args = (donutBinary, '-f', '1', '-m', 'go', '-p', binaryArgs, '-o', shellcodePath, '-i' , binary)
                 else:   
                         donutBinary = os.path.join(Path(__file__).parent, 'ressources', 'donut')
                         shellcodePath = os.path.join(Path(__file__).parent, 'bin', 'dropper.bin')
@@ -191,7 +191,6 @@ def generatePayloads(binary, binaryArgs, rawShellCode):
         popen = subprocess.Popen(args, stdout=subprocess.PIPE, cwd=Path(__file__).parent)
         popen.wait()
         output = popen.stdout.read()
-        print(output.decode("utf-8") )
 
         if os.name == 'nt':
                 dropperExePath = os.path.join(Path(__file__).parent, 'bin\\implant.exe')
@@ -201,11 +200,11 @@ def generatePayloads(binary, binaryArgs, rawShellCode):
                 dropperDllPath = os.path.join(Path(__file__).parent, 'bin/implant.dll')
 
         if not os.path.isfile(dropperExePath):
-                print("[+] Error: Dropper EXE file don't exist")
+                print("[-] Error: Dropper EXE file don't exist")
                 return "", ""
 
         if not os.path.isfile(dropperDllPath):
-                print("[+] Error: Dropper DLL file don't exist")
+                print("[-] Error: Dropper DLL file don't exist")
                 return "", ""
 
         print("[+] Done")

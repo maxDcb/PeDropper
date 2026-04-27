@@ -105,7 +105,7 @@ int FindTarget(const char *procname)
 	Process32Next_t pProcess32Next = (Process32Next_t)pGetProcAddress(pGetModuleHandle(sKernel32DLL), sProcess32Next);
 	while (pProcess32Next(hProcSnap, &pe32)) 
 	{
-		if (strcmp(procname, pe32.szExeFile) == 0) 
+		if (_strcmp(procname, pe32.szExeFile) == 0) 
 		{
 			pid = pe32.th32ProcessID;
 			break;
